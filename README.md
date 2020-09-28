@@ -8,7 +8,7 @@
 
 [Jira Demo App](https://bitbucket.org/atlassianlabs/atlassian-connect-whoslooking-connect-v2/src/0019f3786267?at=master)
 
-## Start
+## Test
 
 ```sh
 http-server -p 8000
