@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.css" rel="stylesheet"/>
+    <link href="jira.css" rel="stylesheet"/>
+    <link href="style.css" rel="stylesheet"/>
+    <style>
+        .ng-hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="content" ng-controller="SyncPageController as vm">
+    <div class="aui-sidebar projects-sidebar">
+        <div class="aui-sidebar-wrapper" style="height: 802px;">
+            <div class="aui-sidebar-body">
+                <header class="aui-page-header">
+                    <div class="aui-page-header-inner">
+                        <div class="aui-page-header-main">
+                            <div class="aui-group aui-group-split">
+                                <div class="aui-item project-title">
+                                    <h1 class="mb-md">TimeChimp</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                <nav class="aui-navgroup aui-navgroup-vertical">
+                    <div class="aui-navgroup-inner sidebar-content-container">
+                        <div class="aui-sidebar-group aui-sidebar-group-actions collapsed-scope-filter-container"></div>
+                        <div class="aui-sidebar-group aui-sidebar-group-tier-one" data-id="sidebar-navigation-panel">
+                            <ul class="aui-nav">
+                                <li ng-class="{'aui-nav-selected': vm.tab == 'times'}">
+                                    <a class="aui-nav-item" href="javascript:void(0)" ng-click="vm.tab = 'times'">Link
+                                        time entries</a>
+                                </li>
+                                <li ng-show="vm.showProjectMapping"
+                                    ng-class="{'aui-nav-selected': vm.tab == 'projects'}">
+                                    <a class="aui-nav-item" href="javascript:void(0)" ng-click="vm.tab = 'projects'">Project
+                                        mapping</a>
+                                </li>
+                                <li ng-show="vm.currentUser" class="aui-sidebar-group jira-sidebar-group-with-divider project-shortcuts-group project-shortcuts-group_empty">
+                                    <a class="aui-nav-item style1" href="javascript:void(0)" ng-click="vm.logout()">Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="aui-page-panel">
+        <div class="aui-page-panel-inner">
+            <div class="issue-navigator pin-sidebar-enabled">
+                <div class="content">
+                    <div class="issue-view">
+                        <div ng-show="vm.localStorageError" class="issue-container ng-hide">
+                            <p class="error">ERROR: localstorage is not working. Check your browser security settings or try an other browser. Still don't working? Email support@timechimp.com.</p>
+                        </div>
+                        <div ng-if="vm.userIsLoggon() && vm.tab == 'times'" class="issue-container">
+                            <div class="issue-edit-form">
+                                <header class="issue-header js-stalker">
+                                    <div class="issue-header-content">
+                                        <header class="aui-page-header">
+                                            <div class="aui-page-header-inner">
+                                                <div class="aui-page-header-main">
+                                                    <h1>Link time entries</h1>
+                                                    <p>Give the issue key and link the time entry. When the issue key is
+                                                        provided in the time description, it links automaticly</p>
+                                                </div>
+                                            </div>
+                                        </header>
+                                        <div class="command-bar">
+                                            <div class="ops-cont">
+                                                <div class="ops-menus aui-toolbar">
+                                                    <div class="toolbar-split toolbar-split-left">
+                                                        <ul class="toolbar-group pluggable-ops">
+                                                            <li class="toolbar-item toolbar-analytics">
+                                                                <a class="aui-button aui-button-primary"
+                                                                   href="javascript:void(0)"
+                                                                   ng-click="vm.linkAllTimeEntry()"><span
+                                                                        class="trigger-label">Link all entries</span></a>
+                                                            </li>
+                                                        </ul>
+                                                        <ul class="toolbar-group pluggable-ops">
+                                                            <li ng-show="!vm.showUnlinkedEntries" class="toolbar-item toolbar-analytics">
+                                                                <a class="aui-button"
+                                                                   href="javascript:void(0)"
+                                                                   ng-click="vm.showUnlinkedEntries = true"><span
+                                                                        class="trigger-label">Show unlinked entries</span></a>
+                                                            </li>
+                                                            <li ng-show="vm.showUnlinkedEntries" class="toolbar-item toolbar-analytics">
+                                                                <a class="aui-button"
+                                                                   href="javascript:void(0)"
+                                                                   ng-click="vm.showUnlinkedEntries = false"><span
+                                                                        class="trigger-label">Hide unlinked entries</span></a>
+                                                            </li>
+                                                        </ul>
+                                                        <ul class="toolbar-group pluggable-ops">
+                                                            <li class="toolbar-item toolbar-analytics">
+                                                                <a class="toolbar-trigger" href="javascript:void(0)"
+                                                                   ng-click="vm.navigateWeek(-1)"><span
+                                                                        class="trigger-label"><</span></a>
+                                                            </li>
+                                                            <li class="toolbar-item toolbar-analytics">
+                                                                <a class="toolbar-trigger" href="javascript:void(0)"
+                                                                   ng-click="vm.navigateWeek()"><span
+                                                                        class="trigger-label">Week {{vm.weekNumber()}}</span></a>
+                                                            </li>
+                                                            <li class="toolbar-item toolbar-analytics">
+                                                                <a class="toolbar-trigger" href="javascript:void(0)"
+                                                                   ng-click="vm.navigateWeek(+1)"><span
+                                                                        class="trigger-label">></span></a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </header>
+                                <div class="issue-body-content">
+                                    <div class="aui-group">
+                                        <table class="aui">
+                                            <thead>
+                                            <tr>
+                                                <th class="no-wrap">
+                                                    <h6>Date</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>Customer</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>Project</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>Task</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>Description</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>Billable</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>Hours</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>Issue key</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>Action</h6>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="time in vm.times | orderBy: 'date'" ng-show="vm.showUnlinkedEntries || !time.externalUrl">
+                                                    <td class="no-wrap">{{time.date | date:'yyyy-MM-dd'}}</td>
+                                                    <td>{{time.customerName}}</td>
+                                                    <td>{{time.projectName}}</td>
+                                                    <td>{{time.taskName}}</td>
+                                                    <td>{{time.notes}}</td>
+                                                    <td><span ng-show="time.billable" class="aui-lozenge aui-lozenge-subtle aui-lozenge-default">Billable</span></td>
+                                                    <td>{{time.hours | number:2}}</td>
+                                                    <td>
+                                                        <div ng-show="!time.externalUrl">
+                                                            <input type="text" ng-model="time.issueKey" ng-init="time.issueKey = vm.getIssueKeyFromNotes(time)"/>
+                                                        </div>
+                                                    <div ng-show="time.externalUrl">
+                                                            {{vm.getIssueKeyFromUrl(time.externalUrl)}}
+                                                    </div>
+                                                    </td>
+                                                    <td>
+                                                        <div ng-show="!time.externalUrl">
+                                                            <button ng-disabled="!time.issueKey" ng-click="vm.linkTimeEntry(time)" class="aui-button">
+                                                                Link time entry
+                                                            </button>
+                                                        </div>
+                                                        <div ng-show="time.externalUrl">
+                                                            <button ng-click="vm.unlinkTimeEntry(time)" class="aui-button">
+                                                                Unlink time entry
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="vm.userIsLoggon() && vm.tab == 'projects'" class="issue-container">
+                            <div class="issue-edit-form">
+                                <header class="issue-header js-stalker">
+                                    <div class="issue-header-content">
+                                        <header class="aui-page-header">
+                                            <div class="aui-page-header-inner">
+                                                <div class="aui-page-header-main">
+                                                    <h1>Project mapping</h1>
+                                                    <p>Map the Jira projects with the TimeChimp project, so it sets as
+                                                        default project by the current issue</p>
+                                                </div>
+                                            </div>
+                                        </header>
+                                        <div class="command-bar">
+                                            <div class="ops-cont">
+                                                <div class="ops-menus aui-toolbar">
+                                                    <div class="toolbar-split toolbar-split-left">
+                                                        <ul class="toolbar-group pluggable-ops">
+
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </header>
+                                <div class="issue-body-content">
+                                    <div class="aui-group">
+                                        <table class="aui">
+                                            <thead>
+                                            <tr>
+                                                <th>
+                                                    <h6>Klant</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>Project</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>Jira project</h6>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="project in vm.projects | orderBy: ['customerName', 'name']">
+                                                <td>{{project.customerName}}</td>
+                                                <td>{{project.name}}</td>
+                                                <td>
+                                                    <ui-select class="mt-sm" ng-model="project.externalUrl"
+                                                               on-select="vm.selectProject($item, project)"
+                                                               title="Choose project" theme="select2">
+                                                        <ui-select-match allow-clear="true"
+                                                                         placeholder="Choose project">
+                                                            {{$select.selected.name}}
+                                                        </ui-select-match>
+                                                        <ui-select-choices
+                                                                group-by="'customerName'"
+                                                                repeat="jiraProject.externalUrl as jiraProject in vm.jiraProjects | filter: $select.search | orderBy: ['customerName', 'name']"
+                                                                position="down">
+                                                            <div ng-bind-html="jiraProject.name | highlight: $select.search"></div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="!vm.userIsLoggon()" ng-include="'login.html'" class="mt-xlg"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular-sanitize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="sync-page.js"></script>
+</body>
+
+</html>

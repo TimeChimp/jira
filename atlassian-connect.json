@@ -1,0 +1,43 @@
+{
+    "key": "timechimp",
+    "name": "TimeChimp Time Tracking",
+    "description": "Timechimp time tracking module for Jira",
+    "baseUrl": "https://github.com/timechimp-bv/jira",
+    "vendor": {
+      "name": "TimeChimp",
+      "url": "https://www.timechimp.com"
+    },
+    "authentication": {
+      "type": "none"
+    },
+    "version": "1.0.2",
+    "modules": {
+      "webPanels": [
+        {
+          "location": "atl.jira.view.issue.right.context",
+          "weight": 1,
+          "url": "/issue-panel.html",
+          "key": "timechimp-panel",
+          "name": {
+            "value": "TimeChimp"
+          }
+        }
+      ],
+      "generalPages": [
+        {
+          "url": "/sync-page.html",
+          "icon": {
+            "width": 80,
+            "height": 80,
+            "url": "/timechimp-logo.png"
+          },
+          "key": "timechimp-sync-page",
+          "location": "system.top.navigation.bar",
+          "name": {
+            "value": "TimeChimp"
+          }
+        }
+      ]
+    },
+    "scopes": [ "WRITE" ]
+  }

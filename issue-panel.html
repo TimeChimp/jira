@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/angular-moment-picker/0.10.1/angular-moment-picker.min.css"
+        rel="stylesheet" />
+    <link href="jira.css" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" />
+    <style>
+        .ng-hide {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div ng-show="vm.localStorageError" class="issue-body ng-hide">
+        <p class="error">ERROR: localstorage is not working. Check your browser security settings or try an other
+            browser. Still not working? Email support@timechimp.com.</p>
+    </div>
+    <div ng-controller="IssuePanelController as vm" class="issue-body">
+        <div ng-if="!vm.userIsLoggon()" ng-include="'login.html'"></div>
+        <div ng-if="vm.userIsLoggon()">
+            <form class="aui ng-hide" name="addTimeForm" ng-show="!vm.loading">
+                <div ng-if="!vm.time.timer">
+                    <span class="project-task-title">Project / Task</span>
+                    <a href="javascript:void(0)" class="pull-right" ng-click="vm.logout()">Logout</a>
+                    <ui-select class="mt-sm" ng-model="vm.time.projectId" on-select="vm.selectProject($item)" required
+                        title="Choose project" theme="select2"
+                        ng-class="{'error': vm.submitted && !vm.time.projectId }">
+                        <ui-select-match placeholder="Choose project">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices group-by="'customerName'"
+                            repeat="project.id as project in vm.projects | filter: $select.search | orderBy: ['customerName', 'name']"
+                            position="down">
+                            <div ng-bind-html="project.name | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                    <ui-select class="mt-md" ng-model="vm.time.projectTaskId" on-select="vm.selectProjectTask($item)"
+                        ng-disabled="!vm.time.projectId" required title="Choose task" theme="select2"
+                        ng-class="{'error': vm.submitted && !vm.time.projectTaskId }">
+                        <ui-select-match placeholder="Choose task">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices group-by="vm.taskIsBillable"
+                            repeat="task.id as task in vm.projectTasks | filter: $select.search | orderBy: ['name']"
+                            position='down'>
+                            <div ng-bind-html="task.name | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                    <div class="mt-md notes-input-container">
+                        <textarea class="textarea long-field" name="description" placeholder="Description (optional)"
+                            ng-model="vm.time.notes"></textarea>
+                        <input class="time-input" name="time" type="text" time-format maxlength="6" autocomplete="off"
+                            ng-model="vm.time.hours" />
+                        <div ng-show="vm.time.hours" moment-picker="vm.time.date" format="DD-MM-YYYY" locale="nl">
+                            <input class="date-position" ng-model="vm.time.date" 
+                                ng-model-options="{ updateOn: 'blur' }">
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="vm.time.timer">
+                    <textarea class="textarea long-field" name="description" placeholder="Description (optional)"
+                        ng-model="vm.time.notes" ng-change="vm.notesAreChanged = true"></textarea>
+                    <timer start-time="vm.time.timer"></timer>
+                </div>
+                <div ng-show="!vm.time.timer" class="mt-md">
+                    <button ng-show="vm.time.hours" class="aui-button aui-button-primary mt-none" type="button"
+                        ng-click="vm.addTime(addTimeForm.$valid, false)">
+                        Save Entry
+                    </button>
+                    <button ng-show="!vm.time.hours" class="aui-button aui-button-primary mt-none" type="button"
+                        ng-click="vm.addTime(addTimeForm.$valid, true)">
+                        <span class="aui-icon aui-icon-small aui-iconfont-time"></span> Start Timer
+                    </button>
+                </div>
+                <div ng-show="vm.time.timer" class="mt-md">
+                    <button class="aui-button aui-button-primary mt-none" type="button" ng-click="vm.stopTimer()">
+                        <span class="aui-icon aui-icon-small aui-iconfont-time"></span> Stop Timer
+                    </button>
+                    <a ng-show="vm.notesAreChanged" class="ml-md" href="javascript:void(0)" ng-click="vm.updateTime()">
+                        Update description
+                    </a>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/nl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular-sanitize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment-picker/0.10.1/angular-moment-picker.min.js"></script>
+    <script src="issue-panel.js"></script>
+    <script src="time-format.js"></script>
+    <script src="timer.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+<form class="aui">
+    <div class="field-group">
+        <label>
+            Email
+            <span class="aui-icon icon-required">Required</span>
+        </label>
+        <input class="text" placeholder="E-mailadres" type="email" ng-model="vm.username"/>
+    </div>
+    <div class="field-group">
+        <label>
+            Password
+            <span class="aui-icon icon-required">Required</span>
+        </label>
+        <input class="text" placeholder="Password" type="password" ng-model="vm.password"/>
+        <div ng-show="vm.errorMessage" class="error">{{vm.errorMessage}}</div>
+    </div>
+    <div class="field-group">
+        <label>
+        </label>
+        <button class="aui-button aui-button-primary" ng-click="vm.login()">Login</button>
+    </div>
+</form>
