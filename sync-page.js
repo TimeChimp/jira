@@ -85,14 +85,14 @@
                 }
             };
 
-            var q1 = $http.get('https://app.timechimp.com/api/user/current', vm.httpHeader)
+            var q1 = $http.get('https://web.timechimp.com/api/user/current', vm.httpHeader)
                 .then(function (response) {
                     vm.showProjectMapping = response.data.accountTypeId > 1;
                 }, function (error) {
                     console.log(error)
                 });
 
-            var q2 = $http.get('https://app.timechimp.com/api/project/uiselect', vm.httpHeader)
+            var q2 = $http.get('https://web.timechimp.com/api/project/uiselect', vm.httpHeader)
                 .then(function (response) {
                     vm.projects = response.data;
                 }, function (error) {
@@ -120,7 +120,7 @@
 
             var date = vm.date.format('YYYY-MM-DD');
 
-            $http.get('https://app.timechimp.com/api/time/week/' + vm.currentUser.username + '/' + date, vm.httpHeader)
+            $http.get('https://web.timechimp.com/api/time/week/' + vm.currentUser.username + '/' + date, vm.httpHeader)
                 .then(function (response) {
                     vm.times = response.data;
                 }, function (error) {
@@ -158,7 +158,7 @@
                             time.externalName = issue.key + ': ' + issue.fields.summary;
                             time.externalUrl = vm.currentDomain + '/browse/' + time.issueKey;
         
-                            $http.put('https://app.timechimp.com/api/time/' + time.id, time, vm.httpHeader)
+                            $http.put('https://web.timechimp.com/api/time/' + time.id, time, vm.httpHeader)
                                 .then(function (response) {
                                     AP.flag.create({
                                         body: 'Time entry for issue ' + issue.key + ' is linked and issue worklog is created',
@@ -184,7 +184,7 @@
             time.externalName = null;
             time.externalUrl = null;
 
-            $http.put('https://app.timechimp.com/api/time/' + time.id, time, vm.httpHeader)
+            $http.put('https://web.timechimp.com/api/time/' + time.id, time, vm.httpHeader)
                 .then(function (response) {
                     AP.flag.create({
                         body: 'Time entry is unlinked. Issue worklog has to be removed manually.',
@@ -255,7 +255,7 @@
                 grant_type: 'password'
             });
 
-            $http.post('https://app.timechimp.com/token', data, httpConfig)
+            $http.post('https://web.timechimp.com/token', data, httpConfig)
                 .then(function (response) {
                     vm.currentUser = {
                         token: response.data.access_token,
@@ -281,7 +281,7 @@
         }
 
         function selectProject(jiraProject, timechimpProject) {
-            $http.get('https://app.timechimp.com/api/project/' + timechimpProject.id, vm.httpHeader)
+            $http.get('https://web.timechimp.com/api/project/' + timechimpProject.id, vm.httpHeader)
                 .then(function (response) {
                     var project = response.data;
 
@@ -294,7 +294,7 @@
                         project.externalUrl = null;
                     }
 
-                    $http.put('https://app.timechimp.com/api/project/' + timechimpProject.id, project, vm.httpHeader)
+                    $http.put('https://web.timechimp.com/api/project/' + timechimpProject.id, project, vm.httpHeader)
                         .then(function (response) {
                             if (jiraProject) {
                                 AP.flag.create({
