@@ -65,7 +65,7 @@
                 vm.time.externalName = vm.jiraIssue.key + ': ' + vm.jiraIssue.fields.summary;
                 vm.time.externalUrl = vm.pageLocation;
 
-                $http.post('https://app.timechimp.com/api/time', vm.time, vm.httpHeader)
+                $http.post('https://web.timechimp.com/api/time', vm.time, vm.httpHeader)
                     .then(function (response) {
                         if (timer) {
                             vm.time = response.data;
@@ -89,7 +89,7 @@
         }
 
         function updateTime() {
-            $http.put('https://app.timechimp.com/api/time', vm.time, vm.httpHeader)
+            $http.put('https://web.timechimp.com/api/time', vm.time, vm.httpHeader)
                 .then(function (response) {
                     vm.notesAreChanged = false;
 
@@ -107,7 +107,7 @@
         }
 
         function startTimer() {
-            $http.post('https://app.timechimp.com/api/time/starttimer/' + vm.time.id, null, vm.httpHeader)
+            $http.post('https://web.timechimp.com/api/time/starttimer/' + vm.time.id, null, vm.httpHeader)
                 .then(function (response) {
                     vm.time.timer = response.data;
 
@@ -129,7 +129,7 @@
         }
 
         function stopTimer() {
-            $http.post('https://app.timechimp.com/api/time/stoptimer/' + vm.time.id, null, vm.httpHeader)
+            $http.post('https://web.timechimp.com/api/time/stoptimer/' + vm.time.id, null, vm.httpHeader)
                 .then(function (response) {
                     vm.time.hours = response.data;
 
@@ -148,7 +148,7 @@
         }
 
         function getTimer() {
-            $http.get('https://app.timechimp.com/api/time/timer', vm.httpHeader)
+            $http.get('https://web.timechimp.com/api/time/timer', vm.httpHeader)
                 .then(function (response) {
                     if (response && response.data) {
                         vm.timer = response.data;
@@ -193,14 +193,14 @@
                 }
             };
 
-            var q1 = $http.get('https://app.timechimp.com/api/project/' + vm.currentUser.username + '/uiselectbyuserjira', vm.httpHeader)
+            var q1 = $http.get('https://web.timechimp.com/api/project/' + vm.currentUser.username + '/uiselectbyuserjira', vm.httpHeader)
                 .then(function (response) {
                     vm.projects = response.data;
                 }, function (error) {
                     console.log(error)
                 });
 
-            var q2 = $http.get('https://app.timechimp.com/api/projecttask/' + vm.currentUser.username + '/uiselectbyuser', vm.httpHeader)
+            var q2 = $http.get('https://web.timechimp.com/api/projecttask/' + vm.currentUser.username + '/uiselectbyuser', vm.httpHeader)
                 .then(function (response) {
                     vm.allProjectTasks = response.data;
                 }, function (error) {
@@ -360,7 +360,7 @@
                 grant_type: 'password'
             });
 
-            $http.post('https://app.timechimp.com/token', data, httpConfig)
+            $http.post('https://web.timechimp.com/token', data, httpConfig)
                 .then(function (response) {
                     vm.currentUser = {
                         token: response.data.access_token,
