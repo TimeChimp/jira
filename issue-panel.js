@@ -193,14 +193,14 @@
                 }
             };
 
-            var q1 = $http.get('https://web.timechimp.com/api/project/' + vm.currentUser.username + '/uiselectbyuserjira', vm.httpHeader)
+            var q1 = $http.get('https://web.timechimp.com/api/project/' + vm.currentUser.id + '/uiselectbyuserjira', vm.httpHeader)
                 .then(function (response) {
                     vm.projects = response.data;
                 }, function (error) {
                     console.log(error)
                 });
 
-            var q2 = $http.get('https://web.timechimp.com/api/projecttask/' + vm.currentUser.username + '/uiselectbyuser', vm.httpHeader)
+            var q2 = $http.get('https://web.timechimp.com/api/projecttask/' + vm.currentUser.id + '/uiselectbyuser', vm.httpHeader)
                 .then(function (response) {
                     vm.allProjectTasks = response.data;
                 }, function (error) {

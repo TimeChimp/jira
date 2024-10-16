@@ -120,7 +120,7 @@
 
             var date = vm.date.format('YYYY-MM-DD');
 
-            $http.get('https://web.timechimp.com/api/time/week/' + vm.currentUser.username + '/' + date, vm.httpHeader)
+            $http.get('https://web.timechimp.com/api/time/week/' + vm.currentUser.id + '/' + date, vm.httpHeader)
                 .then(function (response) {
                     vm.times = response.data;
                 }, function (error) {
