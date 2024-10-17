@@ -193,7 +193,27 @@
                 }
             };
 
-            var q1 = $http.get('https://web.timechimp.com/api/project/' + vm.currentUser.id + '/uiselectbyuserjira', vm.httpHeader)
+            console.log("set current user ongoing")
+
+            var q1 = $http.get('https://web.timechimp.com/api/user/current', vm.httpHeader)
+                .then(function (response) {
+                    vm.showProjectMapping = response.data.accountTypeId > 1;
+
+                    vm.currentUser = {
+                        token: vm.currentUser.token,
+                        username: vm.currentUser.username,
+                        id: response.data.id
+                    };
+
+                    localStorage.removeItem('jiraTimeChimpLogin');
+
+                    // put token in localstorage
+                    localStorage.setItem('jiraTimeChimpLogin', JSON.stringify(vm.currentUser));
+                }, function (error) {
+                    console.log(error)
+                });
+
+            var q1 = $http.get('https://web.timechimp.com/api/project/' + vm.currentUser.username + '/uiselectbyuserjira', vm.httpHeader)
                 .then(function (response) {
                     vm.projects = response.data;
                 }, function (error) {
