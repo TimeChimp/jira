@@ -213,7 +213,6 @@
                 });
 
             var q1 = $http.get('https://web.timechimp.com/api/project/' + vm.currentUser.id + '/uiselectbyuserjira', vm.httpHeader)
->>>>>>> Stashed changes
                 .then(function (response) {
                     vm.projects = response.data;
                 }, function (error) {

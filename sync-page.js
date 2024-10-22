@@ -85,8 +85,6 @@
                 }
             };
 
-            console.log("set current user ongoing")
-
             var q1 = $http.get('https://web.timechimp.com/api/user/current', vm.httpHeader)
                 .then(function (response) {
                     vm.showProjectMapping = response.data.accountTypeId > 1;
