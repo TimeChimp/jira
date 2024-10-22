@@ -41,7 +41,7 @@
         function init() {
             moment.locale('nl');
 
-            vm.time.date = moment();
+            vm.time.date = moment().format('L')
 
             if (userIsLoggon()) {
                 setCurrentUser();
@@ -75,7 +75,7 @@
                             addJiraWorkLog(vm.time.date);
 
                             vm.time = {};
-                            vm.time.date = moment();
+                            vm.time.date = moment().format('L');
 
                             setDefaults();
                         }
@@ -136,7 +136,7 @@
                     addJiraWorkLog(vm.time.timer);
 
                     vm.time = {};
-                    vm.time.date = new moment();
+                    vm.time.date = new moment().format('L');
 
                     setDefaults();
                 }, function (error) {
@@ -193,7 +193,31 @@
                 }
             };
 
+<<<<<<< Updated upstream
             var q1 = $http.get('https://web.timechimp.com/api/project/' + vm.currentUser.username + '/uiselectbyuserjira', vm.httpHeader)
+=======
+            console.log("set current user ongoing")
+
+            var q1 = $http.get('https://web.timechimp.com/api/user/current', vm.httpHeader)
+                .then(function (response) {
+                    vm.showProjectMapping = response.data.accountTypeId > 1;
+
+                    vm.currentUser = {
+                        token: vm.currentUser.token,
+                        username: vm.currentUser.username,
+                        id: response.data.id
+                    };
+
+                    localStorage.removeItem('jiraTimeChimpLogin');
+
+                    // put token in localstorage
+                    localStorage.setItem('jiraTimeChimpLogin', JSON.stringify(vm.currentUser));
+                }, function (error) {
+                    console.log(error)
+                });
+
+            var q1 = $http.get('https://web.timechimp.com/api/project/' + vm.currentUser.id + '/uiselectbyuserjira', vm.httpHeader)
+>>>>>>> Stashed changes
                 .then(function (response) {
                     vm.projects = response.data;
                 }, function (error) {
@@ -218,7 +242,7 @@
                 else {
                     setDefaults();
                 }
-
+                
                 $timeout(function () {
                     vm.loading = false;
                 });
@@ -289,7 +313,7 @@
                 vm.currentDomain = 'https://' + pageLocation.replace('https://', '').split('/')[0];
                 vm.pageLocation = pageLocation.split('?')[0];
 
-                if (pageLocation.indexOf('&selectedIssue=') > 0) {
+                if (pageLocation.indexOf('selectedIssue=') > 0) {
                     var queryString = {};
                     pageLocation.replace(
                         new RegExp("([^?=&]+)(=([^&]*))?", "g"),
@@ -411,8 +435,8 @@
         }
 
         function toUtcDate(date) {
-            var zoneOffset = moment(date).utcOffset();
-            var utcMoment = moment.utc(moment(date).utcOffset(zoneOffset).toArray());
+            var zoneOffset = moment(date, 'DD-MM-YYYY').utcOffset();
+            var utcMoment = moment.utc(moment(date, 'DD-MM-YYYY').utcOffset(zoneOffset).toArray());
 
             return utcMoment.toDate();
         }

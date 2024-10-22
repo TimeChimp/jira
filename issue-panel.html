@@ -55,7 +55,7 @@
                             ng-model="vm.time.notes"></textarea>
                         <input class="time-input" name="time" type="text" time-format maxlength="6" autocomplete="off"
                             ng-model="vm.time.hours" />
-                        <div ng-show="vm.time.hours" moment-picker="vm.time.date" format="DD-MM-YYYY" locale="nl">
+                        <div ng-show="vm.time.hours" moment-picker="vm.time.date" format="L" locale="nl">
                             <input class="date-position" ng-model="vm.time.date" 
                                 ng-model-options="{ updateOn: 'blur' }">
                         </div>
