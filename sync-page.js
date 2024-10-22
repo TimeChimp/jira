@@ -85,9 +85,21 @@
                 }
             };
 
+            console.log("set current user ongoing")
+
             var q1 = $http.get('https://web.timechimp.com/api/user/current', vm.httpHeader)
                 .then(function (response) {
                     vm.showProjectMapping = response.data.accountTypeId > 1;
+
+                    vm.currentUser = {
+                        token: vm.currentUser.token,
+                        username: vm.currentUser.username,
+                        id: response.data.id
+                    };
+
+                    localStorage.removeItem('jiraTimeChimpLogin');
+                    // put token in localstorage
+                    localStorage.setItem('jiraTimeChimpLogin', JSON.stringify(vm.currentUser));
                 }, function (error) {
                     console.log(error)
                 });
@@ -120,7 +132,7 @@
 
             var date = vm.date.format('YYYY-MM-DD');
 
-            $http.get('https://web.timechimp.com/api/time/week/' + vm.currentUser.username + '/' + date, vm.httpHeader)
+            $http.get('https://web.timechimp.com/api/time/week/' + vm.currentUser.id + '/' + date, vm.httpHeader)
                 .then(function (response) {
                     vm.times = response.data;
                 }, function (error) {

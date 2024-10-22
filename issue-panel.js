@@ -193,10 +193,6 @@
                 }
             };
 
-<<<<<<< Updated upstream
-            var q1 = $http.get('https://web.timechimp.com/api/project/' + vm.currentUser.username + '/uiselectbyuserjira', vm.httpHeader)
-=======
-            console.log("set current user ongoing")
 
             var q1 = $http.get('https://web.timechimp.com/api/user/current', vm.httpHeader)
                 .then(function (response) {
@@ -224,7 +220,7 @@
                     console.log(error)
                 });
 
-            var q2 = $http.get('https://web.timechimp.com/api/projecttask/' + vm.currentUser.username + '/uiselectbyuser', vm.httpHeader)
+            var q2 = $http.get('https://web.timechimp.com/api/projecttask/' + vm.currentUser.id + '/uiselectbyuser', vm.httpHeader)
                 .then(function (response) {
                     vm.allProjectTasks = response.data;
                 }, function (error) {
