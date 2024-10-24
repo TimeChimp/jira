@@ -89,7 +89,9 @@
         }
 
         function updateTime() {
-            $http.put('https://web.timechimp.com/api/time', vm.time, vm.httpHeader)
+            vm.time.date = toUtcDate(vm.time.date);
+
+            $http.put('https://web.timechimp.com/api/time/' + vm.time.id, vm.time, vm.httpHeader)
                 .then(function (response) {
                     vm.notesAreChanged = false;
 
@@ -132,6 +134,10 @@
             $http.post('https://web.timechimp.com/api/time/stoptimer/' + vm.time.id, null, vm.httpHeader)
                 .then(function (response) {
                     vm.time.hours = response.data;
+
+                    if (vm.notesAreChanged) {
+                        updateTime();
+                    }
 
                     addJiraWorkLog(vm.time.timer);
 
